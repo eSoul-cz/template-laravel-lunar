@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "Starting the application..."
+
+# Make sure that all necessary directories exist
+mkdir -p storage/framework/cache/data
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p storage/app/public
+mkdir -p storage/app/private
+mkdir -p bootstrap/cache
+
+# Each switch is exactly `true` or `false`; a typo must not silently turn a program off
+for SWITCH in RUN_MIGRATIONS RUN_SCHEDULER RUN_QUEUE_WORKER; do
+    eval "VALUE=\${$SWITCH:-}"
+    if [ "$VALUE" != "true" ] && [ "$VALUE" != "false" ]; then
+        echo "$SWITCH must be 'true' or 'false', got '$VALUE'." >&2
+        exit 1
+    fi
+done
+
+# Ensure proper permissions
+chown -R www-data:www-data storage bootstrap/cache
+
+# Check if running in dev environment
+IS_DEV=false
+if [ "$APP_ENV" = "local" ] || [ "$APP_DEBUG" = "true" ]; then
+    IS_DEV=true
+fi
+
+if [ "$IS_DEV" = "true" ]; then
+    echo "Running in DEV mode - clearing all caches..."
+    php artisan optimize:clear
+else
+    # Prepare Laravel for production on the runtime environment
+    echo "Optimizing Laravel..."
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    php artisan optimize
+fi
+
+php artisan storage:link
+
+# Run database migrations only where RUN_MIGRATIONS=true. A failure is logged and the container keeps running.
+if [ "$RUN_MIGRATIONS" = "true" ]; then
+    echo "Running migrations..."
+    php artisan migrate --force --no-interaction || echo "Migration failed" >&2
+else
+    echo "RUN_MIGRATIONS=false, skipping migrations"
+fi
+
+# Supervisor runs php-fpm and, where switched on, the queue worker and the scheduler
+echo "Starting Supervisor..."
+exec supervisord -c /etc/supervisor/supervisord.conf

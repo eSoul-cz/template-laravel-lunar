@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "Starting the development container..."
+
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public storage/app/private bootstrap/cache
+chown -R sail:sail storage bootstrap/cache 2>/dev/null || true
+
+# Everything below runs as the host user so that the bind mount keeps its ownership
+as_sail() {
+    su -s /bin/sh sail -c "$*"
+}
+
+if [ ! -d vendor ]; then
+    echo "Installing Composer dependencies..."
+    as_sail "composer install --no-interaction --prefer-dist"
+fi
+
+if [ ! -d node_modules ]; then
+    echo "Installing Node dependencies..."
+    as_sail "CI=true pnpm install"
+fi
+
+# The database runs in its own container and may still be initialising on the first start.
+database_is_up() {
+    php -r '
+        $host = getenv("DB_HOST") ?: "mariadb";
+        $port = getenv("DB_PORT") ?: "3306";
+        new PDO(
+            "mysql:host={$host};port={$port};dbname=" . getenv("DB_DATABASE"),
+            getenv("DB_USERNAME") ?: "",
+            getenv("DB_PASSWORD") ?: ""
+        );
+    ' >/dev/null 2>&1
+}
+
+if [ "$DB_CONNECTION" = "mariadb" ] || [ "$DB_CONNECTION" = "mysql" ]; then
+    echo "Waiting for the database at ${DB_HOST:-mariadb}:${DB_PORT:-3306}..."
+    ATTEMPT=0
+    until database_is_up; do
+        ATTEMPT=$((ATTEMPT + 1))
+        if [ "$ATTEMPT" -ge 60 ]; then
+            echo "The database did not answer after ${ATTEMPT} attempts, aborting." >&2
+            exit 1
+        fi
+        sleep 2
+    done
+fi
+
+as_sail "php artisan optimize:clear"
+as_sail "php artisan migrate --force --no-interaction" || echo "Migration failed" >&2
+as_sail "php artisan storage:link" || true
+
+exec supervisord -c /etc/supervisor/supervisord.conf

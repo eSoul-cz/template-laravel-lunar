@@ -1,0 +1,50 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["app"]
+    },
+    "tmpDir": "build/infection/tmp",
+    "threads": "max",
+    "timeout": 60,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/summary.log"
+    },
+    "mutators": {
+        "@default": true,
+
+        // Message-only mutants. Tests assert exception types, metadata and field keys, never the
+        // text of an error message (guideline package/mutation-testing), so a mutant that changes
+        // only wording can never be killed. Every rule below is scoped to a method name or to one
+        // source line, every mutator stays enabled everywhere else, and a matched mutant is
+        // reported as `I` (ignored): it is not run and not counted in the score.
+        // Infection applies none of the rules below when `--mutators=...` is given on the command
+        // line (only `global-ignoreSourceCodeByRegex` survives).
+
+        // Form requests: `messages()` and the `*Messages()` helpers only return arrays of message
+        // texts, so no mutator is applied inside them. `rules()` and the rest are not affected.
+        "global-ignore": [
+            "App\\Infrastructure\\Http\\Requests\\*::messages",
+            "App\\Infrastructure\\Http\\Requests\\*::*Messages"
+        ],
+
+        // `$condition ? 'First sentence.' : 'Second sentence.'` only swaps two message texts. Both
+        // literals must be multi-word sentences ending with a full stop, so a ternary that picks a
+        // status, a label or any other value is still mutated.
+        "Ternary": {
+            "ignoreSourceCodeByRegex": [
+                ".+ \\? '[^']+ [^']+\\.' : '[^']+ [^']+\\.'[,;)]*"
+            ]
+        },
+
+        // Exception constructors: `parent::__construct($message);` only sets the exception message.
+        "MethodCallRemoval": {
+            "ignoreSourceCodeByRegex": [
+                "parent::__construct\\(\\$\\w*[mM]essage\\);"
+            ]
+        }
+    },
+    // Only used when Infection runs the initial test suite itself (without --coverage).
+    "initialTestsPhpOptions": "-d xdebug.mode=coverage -d memory_limit=2G"
+}

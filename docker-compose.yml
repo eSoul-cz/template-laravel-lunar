@@ -1,0 +1,82 @@
+services:
+    laravel:
+        build:
+            context: './'
+            dockerfile: ./docker/dev/Dockerfile
+            args:
+                WWWUSER: '${WWWUSER:-1000}'
+                WWWGROUP: '${WWWGROUP:-1000}'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${VITE_PORT:-5173}:5173'
+        expose:
+            - 9000
+        env_file:
+            - .env
+        # The application talks to the MariaDB service below; a plain .env keeps SQLite for work outside Docker.
+        environment:
+            LARAVEL_SAIL: 1
+            VITE_PORT: '${VITE_PORT:-5173}'
+            DB_CONNECTION: mariadb
+            DB_HOST: mariadb
+            DB_PORT: 3306
+            DB_DATABASE: '${DB_DATABASE:-laravel}'
+            DB_USERNAME: '${DB_USERNAME:-laravel}'
+            DB_PASSWORD: '${DB_PASSWORD:-secret}'
+            MAIL_HOST: mailpit
+            MAIL_PORT: 1025
+        volumes:
+            - '.:/var/www'
+        networks:
+            - dev
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            mailpit:
+                condition: service_started
+    nginx:
+        image: 'nginx:alpine'
+        ports:
+            - '${APP_PORT:-8080}:80'
+        volumes:
+            - './docker/dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
+            - '.:/var/www'
+        networks:
+            - dev
+        depends_on:
+            - laravel
+    mariadb:
+        # The series of the production server (`mariadb_series` of the mariadb role in esoul-infrastructure/ansible): develop on the engine that runs the application.
+        image: 'mariadb:12.3'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MARIADB_DATABASE: '${DB_DATABASE:-laravel}'
+            MARIADB_USER: '${DB_USERNAME:-laravel}'
+            MARIADB_PASSWORD: '${DB_PASSWORD:-secret}'
+            MARIADB_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-secret}'
+        volumes:
+            - 'mariadb:/var/lib/mysql'
+        networks:
+            - dev
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+    # Catches every mail of the application in development: SMTP on mailpit:1025 (published on MAIL_PORT for work outside Docker), inbox UI on MAILPIT_UI_PORT.
+    mailpit:
+        image: 'axllent/mailpit:v1.34'
+        ports:
+            - '${MAILPIT_UI_PORT:-8025}:8025'
+            - '${MAIL_PORT:-1025}:1025'
+        networks:
+            - dev
+networks:
+    dev:
+        driver: bridge
+volumes:
+    mariadb:
+        driver: local

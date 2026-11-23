@@ -1,0 +1,17 @@
+# pnpm 12 reads only auth, registry, TLS, proxy and `local-address` settings from `.npmrc`; every other project setting lives in this file.
+
+# Dependencies whose install scripts may run; any other package with one fails the install
+# (`ERR_PNPM_IGNORED_BUILDS`) until it is listed here (`pnpm approve-builds`). Nothing needs one today.
+allowBuilds: {}
+
+# Supply chain: pnpm only takes package versions that are at least one day old (value in minutes).
+# An urgent security fix can bypass it with `minimumReleaseAgeExclude: ['<package>@<version>']`, with a comment naming the reason.
+minimumReleaseAge: 1440
+
+# `pnpm audit` runs in CI. An advisory that cannot be fixed yet is listed here, one entry per advisory, with a comment
+# giving the reason and the date it is reviewed again (an entry without both is not accepted in review).
+auditConfig:
+    ignoreGhsas: []
+# Hoisted to the root node_modules so that tools and editors resolve `@inertiajs/core` (a dependency of @inertiajs/vue3).
+publicHoistPattern:
+    - '@inertiajs/core'

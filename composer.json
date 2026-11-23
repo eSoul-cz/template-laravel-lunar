@@ -1,0 +1,128 @@
+{
+    "name": "esoul-cz/template-laravel-lunar",
+    "description": "eSoul Laravel 13 e-shop on Lunar with an Inertia 3 and Vue 3 storefront (Lunar owns the admin panel).",
+    "$schema": "https://getcomposer.org/schema.json",
+    "type": "project",
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.5",
+        "laravel/framework": "^13.17",
+        "laravel/tinker": "^3.0",
+        "esoul-cz/laravel-cqrs": "^1.0",
+        "ext-bcmath": "*",
+        "inertiajs/inertia-laravel": "^3.0",
+        "laravel/wayfinder": "^0.1.14",
+        "lunarphp/lunar": "^1.5"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.5",
+        "laravel/pint": "^1.27",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^13.2",
+        "brianium/paratest": "^7.24",
+        "esoul-cz/guidelines": "^0.3",
+        "infection/infection": "^0.35",
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": "@setup:steps",
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": "@php artisan test --parallel",
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan boost:update --ansi || true",
+            "esoul-guidelines sync"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php -r \"is_dir('.esoul') || mkdir('.esoul', 0755, true); is_file('LICENSE') && rename('LICENSE', '.esoul/template-LICENSE');\"",
+            "@composer config license proprietary",
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "setup:steps": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "pnpm install",
+            "pnpm build"
+        ],
+        "test:coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan config:clear --ansi",
+            "@putenv XDEBUG_MODE=coverage",
+            "@php -d memory_limit=2G artisan test --parallel --coverage-html=test-coverage --coverage-text --only-summary-for-coverage-text"
+        ],
+        "coverage": "@test:coverage",
+        "phpstan": "./vendor/bin/phpstan --memory-limit=1G analyse",
+        "pint": "./vendor/bin/pint --parallel --cache-file=tmp/pint.cache",
+        "cs": "./vendor/bin/pint --parallel --cache-file=tmp/pint.cache --test",
+        "mutation:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "rm -rf build/infection/coverage @no_additional_args",
+            "./vendor/bin/paratest --processes=${MUTATION_THREADS:-4} --cache-directory=build/infection/phpunit-cache --coverage-xml=build/infection/coverage/coverage-xml --log-junit=build/infection/coverage/junit.xml @no_additional_args"
+        ],
+        "mutation": [
+            "Composer\\Config::disableProcessTimeout",
+            "@mutation:coverage",
+            "@putenv XDEBUG_MODE=off",
+            "@php -d memory_limit=4G vendor/bin/infection --coverage=build/infection/coverage --skip-initial-tests --only-covering-test-cases --git-diff-lines --git-diff-base=main --ignore-msi-with-no-mutations --threads=${MUTATION_THREADS:-4} @additional_args"
+        ],
+        "mutation:full": [
+            "Composer\\Config::disableProcessTimeout",
+            "@mutation:coverage",
+            "@putenv XDEBUG_MODE=off",
+            "@php -d memory_limit=4G vendor/bin/infection --coverage=build/infection/coverage --skip-initial-tests --only-covering-test-cases --threads=${MUTATION_THREADS:-4} @additional_args"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "infection/extension-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
