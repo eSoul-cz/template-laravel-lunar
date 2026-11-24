@@ -33,6 +33,7 @@ Thumbs.db
 /.ci/
 /boost.json
 /.mcp.json
+/_reference/
 /resources/js/actions/*
 /resources/js/routes/*
 /resources/js/wayfinder/*
