@@ -105,6 +105,17 @@ Module boundaries are namespaces inside the layers, not separate packages. Each 
 - Money columns hold integer minor units (`BIGINT`); exact decimals are `DECIMAL` with the scale the source material uses. `FLOAT` and `DOUBLE` are never used for money or quantities.
 - Translatable content is stored in JSON columns keyed by locale, one row per entity, never a second row per language.
 
+### Schema changes only in migrations
+
+- A schema change (creating, altering or dropping a table, column or index) lives in a migration, never in a handler, job, controller, listener or console command that runs with the application. A large data operation that needs a work table uses a temporary table, or runs as a migration or an explicit Artisan command that takes a lock.
+
+### Queries that stay correct on real data
+
+- Every sorted or paginated list ends its ordering with a unique key (the primary key) and decides where `NULL` values sort. Without the tiebreaker pages overlap and skip rows, and the engines differ in where `NULL` sorts by default.
+- A join or a correlated subquery on a mapping table (codes to ids, external keys to records) MUST match at most one row per outer row: back it with a unique index. A MariaDB or MySQL `_ci` collation compares case and accents insensitively, so keys that differ only in case or accents collide; check the collation of a text key.
+- A count reported back (imported, updated, skipped) comes from the rows the statement affected, not from a total computed beforehand.
+- Check-then-act on shared state is covered by the locking rule in [cqrs.md](cqrs.md#writing-commands).
+
 ## Money
 
 The principles are in [domain.md](domain.md#money). On this stack:

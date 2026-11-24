@@ -52,6 +52,10 @@ When users type decimals in a comma locale (`1,25`, or `1 234,50` pasted from a 
 
 A form request MUST NOT write: no create, update or delete, no queued job, export or mail. `prepareForValidation()`, `rules()`, `withValidator()` and `passedValidation()` may query to validate; they may not persist. Creating a missing related record "because the user typed a new one" is a write and belongs to the command handler, inside its transaction, where it can also record who did it. A mutating request is `Critical` in review: a rejected request would be half-applied, and a rule that mutates cannot be tested in isolation.
 
+## Partial updates: not sent or cleared
+
+A partial update tells "field not sent" from "field cleared", so a user can empty a value. The request tells the two apart (`$this->has('field')` or `array_key_exists`), and the mapping method hands the command a distinct "not sent" state (for example an `Optional` wrapper) instead of `null`, so the handler leaves an unsent field unchanged and empties a cleared one. A test covers both: the field absent keeps the stored value, the field sent empty clears it.
+
 ## Mapping to commands and queries
 
 - A form request SHOULD expose `toCommand()` or `toQuery()`, which turns the validated data into the command or query the controller dispatches. Building it in the constructor is possible but not recommended; a factory method on the command or query SHOULD NOT be used.
