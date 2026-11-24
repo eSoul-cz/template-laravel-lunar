@@ -65,6 +65,14 @@ composer cs       # pint --test
 composer test     # php artisan test --parallel
 ```
 
+### Guidelines
+
+```bash
+vendor/bin/esoul-guidelines check  # drift of the rendered guidelines, the AGENTS.md block and the lock; never writes
+```
+
+CI runs it as the stage `Guidelines check` of the shared pipeline, from the project's own `vendor/` (see [deployment.md](deployment.md#pipeline)); a failure is fixed with `esoul-guidelines sync` after the content was moved out of the managed block, not by editing the block.
+
 ### Narrow runs
 
 ```bash
@@ -89,6 +97,8 @@ pnpm format:check
 pnpm tsc
 pnpm test
 ```
+
+- When the frontend uses Wayfinder, CI generates the route modules (`php artisan wayfinder:generate`, with `WAYFINDER_TYPES_PREGENERATED=true` set) before `pnpm tsc` and `pnpm build`; without them the typecheck fails on missing imports.
 
 ## Static analysis
 
@@ -153,6 +163,11 @@ docs/documentation build
 ```
 
 The build requires Docker; PDFs are written to the gitignored `docs/pdf/` ([documentation.md](documentation.md#generated-documentation)).
+
+## Known pitfalls
+
+- A migration that passes on SQLite can fail on MariaDB or MySQL: a `timestamp()` column without `nullable()` or a default fails under strict mode (error 1067), and `ONLY_FULL_GROUP_BY` rejects a `SELECT` expression that differs from the `GROUP BY` one. Run migrations and queries on the production engine in the `db-engine` group ([testing.md](testing.md)); identifier length is covered in [architecture.md](architecture.md#migrations).
+- PHPStan reports "no files to analyse" on a new project whose `app/` is still empty. Guard that step in the pipeline; do not disable the analysis.
 
 ## Mutation testing (local, optional)
 
