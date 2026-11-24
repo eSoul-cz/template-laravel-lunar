@@ -31,6 +31,8 @@ Thumbs.db
 /docker-compose.override.yml
 /test-coverage/
 /.ci/
+/boost.json
+/.mcp.json
 /resources/js/actions/*
 /resources/js/routes/*
 /resources/js/wayfinder/*
