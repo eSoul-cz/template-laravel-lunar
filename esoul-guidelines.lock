@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "package_version": "v0.3.4",
+    "package_version": "v0.3.5",
     "layers": [
         "general",
         "framework/laravel",
@@ -18,11 +18,11 @@
         },
         "docs/project_guidelines/architecture.md": {
             "block": "architecture",
-            "sha256": "30647150feb2257ba862baab40f173e02b5d63167c8270339a5388065bf9acca",
+            "sha256": "220ad96f1dd7f3cc9822c9cae48bd27b35b1c19d246c2c38854ddc6bb8d0a48c",
             "sources": {
-                "framework/laravel/architecture.md": "842d84a9de08c9848df7389025a9e9a605631eac3f41e24d456c2790ea13a29a",
+                "framework/laravel/architecture.md": "1b2acb25c35bad71e115519d2906d6c53f2581acfa15ded2699dfe8439f6f2d3",
                 "package/filament/architecture.md": "f264ff94d84d8fd4d43b166b9a676e3aeaa2b1bc511960da3b951860c06dbccf",
-                "package/lunar/architecture.md": "9511c9a413c3ac52cf5c8b31318b8266eb901d7cd5bcc28a155f0f75d184a903"
+                "package/lunar/architecture.md": "e83257370d33750040c3e773c1443dde268ee9efd5ee96ef23049bfad8c9ca0d"
             }
         },
         "docs/project_guidelines/code-review.md": {

@@ -57,6 +57,19 @@ Lunar is the shop's e-commerce core: products, variants, prices, carts, orders, 
 
 The boundaries inside `App\Domain` (the core, `App\Domain\CQRS` which touches Eloquent, and `App\Domain\Providers`) run through the middle of a layer, so they are enforced by an architecture test that is a named exception in [testing.md](testing.md#architecture-tests).
 
+### Fixing a layer-dependency violation
+
+A violation reported by the layer test ([testing.md](testing.md#architecture-tests)) is fixed by moving code to the layer that may hold it, not by relaxing the rule. The class keeps its name and behaviour; only the namespace changes, and every caller and test moves with it in the same change.
+
+- **A. Persistence or a framework call in the domain core.** The class moves into `App\Domain\CQRS` (for example next to the commands or queries it serves) as a collaborator of the handler that calls it. The pure rules stay in the core: a class is split when it mixes the two, and only the part that touches persistence or the framework moves.
+- **B. A DTO the domain logic works with.** A core class that takes or returns a DTO from `App\Application\Dto` depends on the application layer. Such a DTO is a value object: it moves to `App\Domain\ValueObjects\<Module>` and keeps its shape. Queries MAY still return it; a DTO only a page or exporter receives stays in `App\Application\Dto`.
+- **C. A handler that needs infrastructure other than a model.** Decide by the nature of the dependency:
+  - pure framework glue (no persistence, no side effect) MAY stay in the core where the rules of the layer allow it, including the types a package layer allows;
+  - a helper that persists moves to `App\Domain\CQRS`, as in A;
+  - a side effect (mail, notification, cache or read-model refresh, an external call) goes behind an interface in `App\Application\Contract`; the handler depends on the contract and the infrastructure implements it ([Dependency direction](#dependency-direction)).
+- A listener or other class that dispatches commands belongs to `App\Infrastructure`, not to the core.
+- An exception to the layer rule is the last resort. It is recorded in the project part of this file (what it covers and why) and in the layer test, and a test failure on any other class is fixed by A, B or C.
+
 <!-- from: package/lunar -->
 ### Lunar models in the domain core
 
@@ -65,6 +78,14 @@ Lunar is the shop's domain model, so this layer makes one explicit exception to 
 - Code in `App\Domain` MAY import `Lunar\*`: its models (`Lunar\Models\*`) and its value types (`Lunar\DataTypes\*`, `Lunar\Base\DataTransferObjects\*`) as parameter, return and property types. The core rule's ban on an Eloquent model does not cover them.
 - Every other rule of the core and of the dependency direction stays. `Illuminate\*` is still forbidden in the core (database, facades, HTTP, the container, the session), and persistence (queries, saves, transactions, locks) stays in the CQRS handlers.
 - The layer architecture test lists Illuminate namespaces and the application layers, not `Lunar\`, so it needs no change.
+
+### Classes Lunar stores by name
+
+Lunar saves the fully qualified class name of some classes in the database: the attribute field types (`lunar_attributes.type` and the JSON `attribute_data`), models in the morph map without an alias, and anything else registered by class name.
+
+- Such a class MUST NOT be moved or renamed without a data migration that rewrites the stored names, deployed with the code. A refactor that fixes a layer violation ([Fixing a layer-dependency violation](#fixing-a-layer-dependency-violation)) leaves these classes where they are.
+- Where the location of such a class breaks the layer rules, the class is a recorded exception: the project lists it in the project part of this file and in the layer test, with the column or registry that holds its name.
+- A morph map alias is the way to stop depending on a class name for a new model; an existing stored name is changed only by the migration above.
 
 ## Modules
 
