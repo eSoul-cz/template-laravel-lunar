@@ -83,23 +83,8 @@ php artisan make:cqrs-query Catalog/GetProductDetail --handler --return=ProductD
 
 ## Constructing commands and queries
 
-- **The constructor of a command holds only its promoted properties.** It MUST NOT take another object to build itself from, and it does nothing but assign. The same holds for a query that has a constructor and for every DTO that a request or a handler hands over.
-- **Building one from another object goes through a static named constructor on the command**, whose name says the source: `PlaceOrderCommand::fromCart($cart)` returns `new self(...)` with the values it reads from the cart. The source is a type the command's layer may depend on ([Dependency direction](architecture.md#dependency-direction)); a form request is not one, so a request maps itself with its `to<Something>()` method ([Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)).
-
-```php
-final readonly class PlaceOrderCommand implements CommandInterface
-{
-    public function __construct(
-        public int $cartId,
-        public int $userId,
-    ) {}
-
-    public static function fromCart(Cart $cart): self
-    {
-        return new self($cart->id, $cart->user_id);
-    }
-}
-```
+- **The constructor of a command (or of a query or DTO that has one) holds its promoted properties** (SHOULD hold only them) and does not take another object to build itself from. Creating the command by passing the values to the constructor directly (`new PlaceOrderCommand($cartId, $userId)`) is fine.
+- **Creating a command from another object:** the recommended way is a `to<Something>()` method on that other object (a form request's `toCommand()` is the example, [Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)). A public static factory method on the command itself (`PlaceOrderCommand::fromCart($cart)`, also `fromRequest()`) is also valid, but not recommended.
 
 ## Writing queries
 

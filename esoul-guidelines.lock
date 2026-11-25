@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "package_version": "v0.5.3",
+    "package_version": "v0.5.4",
     "layers": [
         "general",
         "framework/laravel",
@@ -34,9 +34,9 @@
         },
         "docs/project_guidelines/cqrs.md": {
             "block": "cqrs",
-            "sha256": "a3aae4a09ec4e722cb3d604a2a3cdcde2bd3a229dd81c0dee2bc5749cf0bde50",
+            "sha256": "0624c0d51b3e67198ebc61328e58fd5c8489cc470f36170b812f686640146234",
             "sources": {
-                "framework/laravel/cqrs.md": "0ca7dd8a1d68bf8e12bc10c94fc75a60beab6a297a6ea85237d8f92202c16a0b"
+                "framework/laravel/cqrs.md": "ae4d6316224ec629aa8528a4d0c8e02ffba29db86aacf8c8debcdc61a99cd4e7"
             }
         },
         "docs/project_guidelines/dependencies.md": {
@@ -99,9 +99,9 @@
         },
         "docs/project_guidelines/requests-and-validation.md": {
             "block": "requests-and-validation",
-            "sha256": "1e706d7a627ad50ddf94fabd6ba10caf1a6bd8cdcf78571a219a75c944de51d5",
+            "sha256": "35fb656067518e384cfbfa087acb6aee22385dc6c6e90f371d3c1aaa6f1df903",
             "sources": {
-                "framework/laravel/requests-and-validation.md": "8602bf1ebc397410db337596d3d151df99572baeb8dcf0b66a1cef3b9381f637"
+                "framework/laravel/requests-and-validation.md": "7f6d89fa8967e8436551d027369786ef372fe8108a97985ff01392a02a1a1095"
             }
         },
         "docs/project_guidelines/security-and-data.md": {
