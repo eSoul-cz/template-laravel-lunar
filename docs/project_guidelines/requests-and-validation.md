@@ -42,11 +42,20 @@ When users type decimals in a comma locale (`1,25`, or `1 234,50` pasted from a 
 ## Retrieving validated data
 
 - The request data is annotated with PHPDoc `@property-read` on the form request and MAY be read as properties (`$request->name`).
-- Every property is transformed to its type in `passedValidation()`, with the request's typed accessors (`boolean()`, `integer()`, `string()`, `array()`, `enum()`), and set with `merge()`.
+- Every property the client sent is transformed to its type in `passedValidation()`, with the request's typed accessors (`boolean()`, `integer()`, `string()`, `array()`, `enum()`), and set with `merge()`. Transform and merge only the keys that are present (`has()` / `array_key_exists`) and keep a sent `null` as `null`: every typed accessor fills a default for a missing or null key (`boolean()` gives `false`, `integer()` gives `0`, `string()` gives `''`), so merging all of them makes a field the client never sent look sent and a cleared one look like `false`, and the [partial update](#partial-updates-not-sent-or-cleared) rule cannot hold.
   - `string()` returns a `Stringable`; call `->toString()`.
   - `float()` MUST NOT be used for money, quantities or hours.
   - Only scalars and arrays go into the validated data; DTOs are built later, in the mapping method, because the input bag cannot hold them.
   - A PHP enum is annotated as the scalar type of its backing value (`type-of<EnumClass>`).
+
+  ```php
+  protected function passedValidation(): void
+  {
+      if ($this->has('active')) {
+          $this->merge(['active' => $this->input('active') === null ? null : $this->boolean('active')]);
+      }
+  }
+  ```
 
 ## A request never writes
 
