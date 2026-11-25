@@ -26,6 +26,8 @@ docker compose exec laravel php artisan key:generate   # only when APP_KEY in .e
 The first start installs the Composer and pnpm dependencies, waits for the database, runs the migrations and starts php-fpm, the queue listener, the scheduler and Vite. Follow it with `docker compose logs -f laravel`.
 `composer create-project` already copies `.env` and generates the key.
 
+**In a project fresh from the template, commit `pnpm-lock.yaml` after the first start**, which writes it (`composer.lock` is already there). The release image runs `pnpm install --frozen-lockfile` and cannot be built without it. Pull-request builds do not show the gap: their tests run `pnpm install`, which leaves a lockfile in the workspace before the test image is built, so the first failure is the build of `main`.
+
 ## Ports
 
 | Port | Service | Setting |
@@ -106,3 +108,4 @@ The shop runs on Lunar 1.x with its own admin panel (Filament 4) at `/admin`, re
 - First setup, once the stack is up: `docker compose exec laravel php artisan migrate`, then `docker compose exec laravel php artisan lunar:install` (default language, currency, channel, tax class and the first admin).
 - Lunar's configuration is not published, except `config/lunar/cart.php`, which swaps Lunar's `CalculateLines` cart step for the project's integer-arithmetic one (`App\Infrastructure\Lunar\Cart\CalculateLines`: minor units, rounded half away from zero). `docker compose exec laravel php artisan vendor:publish --tag=lunar` publishes the rest when it needs changing and leaves that file alone.
 - A currency the shop sells in must be a case of `App\Domain\ValueObjects\Currency`.
+- The panel's stylesheets, scripts and fonts are files under `public/`, published by `php artisan filament:upgrade`, which Composer runs after every install and autoload dump (`post-autoload-dump`), in the release image too. They are generated and ignored by git; a panel without styles means they are missing: run `composer dump-autoload`.
