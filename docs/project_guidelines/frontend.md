@@ -204,7 +204,7 @@ components/ProductSummary                          several branches
 - Numbers, amounts and dates are formatted on the server ([domain.md](domain.md#money)); the frontend renders the string it receives.
 - Shared data (`HandleInertiaRequests`) holds only what every page needs: the acting user's public fields, abilities, flash messages and locale. It never holds a large or per-page collection.
 - Expensive secondary data uses deferred props (`Inertia::defer()`); large datasets are filtered and paginated on the server, never shipped whole.
-- Mutations validate in a form request and redirect afterwards (`back()` or `to_route()`); validation errors and flash messages reach the page through Inertia's shared errors and flash data, never as a hand-built JSON error. Page props, errors and flash keys are a contract tested by Laravel feature tests with `assertInertia()` ([testing.md](testing.md#controller-testing)).
+- Mutations validate in a form request, which maps itself to the command ([Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)), and redirect afterwards (`back()` or `to_route()`); validation errors and flash messages reach the page through Inertia's shared errors and flash data, never as a hand-built JSON error. Page props, errors and flash keys are a contract tested by Laravel feature tests with `assertInertia()` ([testing.md](testing.md#controller-testing)).
 - An inline script in a Blade view carries `nonce="{{ Vite::cspNonce() }}"`. A third-party script or a request to another origin adds its origin to the Content Security Policy in the same change.
 - Page behaviour on the client (forms, navigation, loading states) is in the Vue sections of this file.
 

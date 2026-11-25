@@ -45,7 +45,7 @@ Lunar is the shop's e-commerce core: products, variants, prices, carts, orders, 
 
 - Eloquent models (`App\Infrastructure\Models`, including `User`), controllers (`App\Infrastructure\Http\Controllers`), middleware (`App\Infrastructure\Http\Middleware`), form requests (`App\Infrastructure\Http\Requests`), policies, casts, external clients (`App\Infrastructure\Integration\<System>`), exporters, console commands, jobs and listeners.
 - Contains no business rule. Controllers, console commands, listeners and jobs dispatch commands and execute queries.
-- **Controllers stay thin**: authorize through the policy, validate in a form request ([requests-and-validation.md](requests-and-validation.md)), dispatch one command or execute the queries the page needs, return the response. Nothing else.
+- **Controllers stay thin**: authorize through the policy, validate in a form request ([requests-and-validation.md](requests-and-validation.md)), dispatch the command that the request maps itself to ([Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)) or execute the queries the page needs, return the response. Nothing else.
 
 ### Dependency direction
 

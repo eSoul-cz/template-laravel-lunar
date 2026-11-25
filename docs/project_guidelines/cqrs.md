@@ -111,6 +111,7 @@ final class ListProductsQuery implements QueryInterface
 
 - All commands and queries are called through the buses. Controllers MAY use the facades; handlers, services and jobs inject `CommandBusInterface` and `QueryBusInterface`.
 - A console command, listener or job that changes state dispatches a command. A state change outside a command is `Major` in review.
+- A controller that serves a form request dispatches the command, or executes the query, that the request's `toCommand()` or `toQuery()` returns ([Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)); it does not build it from the request's fields.
 
 ```php
 final readonly class SomeService
