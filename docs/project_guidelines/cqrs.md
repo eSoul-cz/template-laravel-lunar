@@ -81,6 +81,26 @@ php artisan make:cqrs-query Catalog/GetProductDetail --handler --return=ProductD
 - HTTP input is validated by form requests before the command exists ([requests-and-validation.md](requests-and-validation.md)). The handler enforces the business rules and reports a violation with a typed exception in `App\Domain\Exception` that carries the facts as properties. A value that can never be valid raises `InvalidArgumentException`. Callers react to the type and properties, never to the message. Tests MAY also check the internal message ([testing.md](testing.md#error-and-validation-messages)).
 - A handler MAY dispatch other commands and execute queries through buses injected in its constructor, not through facades. It reaches another module's data only that way, never through that module's models ([architecture.md](architecture.md#modules)).
 
+## Constructing commands and queries
+
+- **The constructor of a command holds only its promoted properties.** It MUST NOT take another object to build itself from, and it does nothing but assign. The same holds for a query that has a constructor and for every DTO that a request or a handler hands over.
+- **Building one from another object goes through a static named constructor on the command**, whose name says the source: `PlaceOrderCommand::fromCart($cart)` returns `new self(...)` with the values it reads from the cart. The source is a type the command's layer may depend on ([Dependency direction](architecture.md#dependency-direction)); a form request is not one, so a request maps itself with its `to<Something>()` method ([Mapping to commands and queries](requests-and-validation.md#mapping-to-commands-and-queries)).
+
+```php
+final readonly class PlaceOrderCommand implements CommandInterface
+{
+    public function __construct(
+        public int $cartId,
+        public int $userId,
+    ) {}
+
+    public static function fromCart(Cart $cart): self
+    {
+        return new self($cart->id, $cart->user_id);
+    }
+}
+```
+
 ## Writing queries
 
 - A query is a read: it never changes state and contains no business rule that modifies anything.

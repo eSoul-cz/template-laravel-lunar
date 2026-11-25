@@ -12,15 +12,15 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed the application's local database.
      *
-     * The production start script does not seed. A seeder called here from outside the local check
-     * creates only what every environment needs, is idempotent and never creates an account.
+     * This is the local seeder: it calls the demo seeders (factories, invented data), which refuse to run
+     * outside `local` and `testing`. The production start script never seeds. What every environment needs
+     * belongs in a separate `ProductionSeeder` (idempotent, create-only, no account) that a developer runs by
+     * hand in the container (`php artisan db:seed --class=ProductionSeeder --force`); this seeder MAY call it.
      */
     public function run(): void
     {
-        if (app()->isLocal()) {
-            $this->call(DemoSeeder::class);
-        }
+        $this->call(DemoSeeder::class);
     }
 }

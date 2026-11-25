@@ -49,7 +49,7 @@ if [ "$DB_CONNECTION" = "mariadb" ] || [ "$DB_CONNECTION" = "mysql" ]; then
 fi
 
 as_sail "php artisan optimize:clear"
-as_sail "php artisan migrate --force --no-interaction" || echo "Migration failed" >&2
+as_sail "php artisan migrate --force --no-interaction" || echo "MIGRATION FAILED: the container starts anyway and the schema may be behind the code. Read the output above." >&2
 as_sail "php artisan storage:link" || true
 
 exec supervisord -c /etc/supervisor/supervisord.conf

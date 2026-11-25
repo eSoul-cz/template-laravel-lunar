@@ -45,10 +45,16 @@ fi
 
 php artisan storage:link
 
-# Run database migrations only where RUN_MIGRATIONS=true. A failure is logged and the container keeps running.
+# Run forward-only migrations only where RUN_MIGRATIONS=true. A failing migration does not block the deployment: the failure is
+# logged loudly and the container starts anyway, so whoever monitors the deployment reads it and decides (fix forward or roll back).
+# This script never seeds; seeding is done by hand in the container (`php artisan db:seed --class=...`).
 if [ "$RUN_MIGRATIONS" = "true" ]; then
     echo "Running migrations..."
-    php artisan migrate --force --no-interaction || echo "Migration failed" >&2
+    MIGRATE_STATUS=0
+    php artisan migrate --force --no-interaction || MIGRATE_STATUS=$?
+    if [ "$MIGRATE_STATUS" -ne 0 ]; then
+        echo "MIGRATION FAILED (exit code $MIGRATE_STATUS): the container starts anyway and the schema may be behind the code. Read the output above." >&2
+    fi
 else
     echo "RUN_MIGRATIONS=false, skipping migrations"
 fi

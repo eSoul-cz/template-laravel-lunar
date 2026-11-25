@@ -68,6 +68,10 @@ The settings are in `.env` (local) and in the stack's environment (deployed). A 
 | `MONEY_DEFAULT_CURRENCY` | ISO code used by `App\Infrastructure\Casts\MoneyCast` when a row has no currency |
 | `OTEL_*` | OpenTelemetry export, see below |
 
+## Production start
+
+`docker/production/start` caches the configuration, runs the migrations where `RUN_MIGRATIONS=true` and starts Supervisor. A failing migration does not stop the container: `MIGRATION FAILED` is written to standard error and php-fpm starts anyway, so whoever monitors the deployment reads the log and decides (fix forward or roll back). The script never seeds. A seeder is run by hand in the container (`docker exec <container> php artisan db:seed --class=ProductionSeeder --force`); only a production seeder (idempotent, create-only) may run in staging or production, and `DatabaseSeeder` with `DemoSeeder` is for local development: `DemoSeeder` refuses to run outside `local` and `testing`. Heavy data tasks (recalculations, syncs, imports) run in the background, never in this script.
+
 ## OpenTelemetry
 
 Every deployed application exports traces, logs and metrics over OTLP (gRPC) to the host collector. The base image has the `opentelemetry` PHP extension; the template ships only the `OTEL_*` placeholders in `.env.example` and keeps `OTEL_PHP_AUTOLOAD_ENABLED=false`, so nothing is exported yet.
