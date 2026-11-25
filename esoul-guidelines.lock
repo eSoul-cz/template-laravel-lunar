@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "package_version": "v0.5.4",
+    "package_version": "v0.5.5",
     "layers": [
         "general",
         "framework/laravel",
@@ -48,10 +48,10 @@
         },
         "docs/project_guidelines/deployment.md": {
             "block": "deployment",
-            "sha256": "265b0cae2d37620f4760373c9d6bb97946fc41663b31c78418ed4e50861682ad",
+            "sha256": "91b70359a0401eb6e491b0e34118c3122fa710db2d31f0f83f7b0a6f2637b096",
             "sources": {
-                "general/deployment.md": "e31264a8b5f5e4e0e0fd014d155879e1b6403cd90ff3881c17847d6289a52ad2",
-                "framework/laravel/deployment.md": "c1102f9624ea793c1c6014a29ca1ba11b31fb9dbbbd555f980402d68f1318ff9",
+                "general/deployment.md": "6a0cc72512f2e7e0796582d15b7d1c91c43cf39ce52a93e8107c857ae49e5635",
+                "framework/laravel/deployment.md": "a97bf580beed809069c39f3bb9f7321fc35db3087321ceaa00cb999c6e506f44",
                 "package/laravel-inertia/deployment.md": "de0ab78ae24be359b1b783da9b2b73f9d809b3bdc42c098feaeb0ba823135e6f"
             }
         },

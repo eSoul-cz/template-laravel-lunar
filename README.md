@@ -43,7 +43,7 @@ Application commands run in the container:
 ```bash
 docker compose exec laravel php artisan <command>
 docker compose exec laravel php artisan migrate
-docker compose exec laravel php artisan db:seed       # local demo data (DemoSeeder)
+docker compose exec laravel php artisan db:seed       # local development data (DatabaseSeeder: the test account)
 ```
 
 Checks, in the container or on the host; CI runs the same ones:
@@ -70,7 +70,7 @@ The settings are in `.env` (local) and in the stack's environment (deployed). A 
 
 ## Production start
 
-`docker/production/start` caches the configuration, runs the migrations where `RUN_MIGRATIONS=true` and starts Supervisor. A failing migration does not stop the container: `MIGRATION FAILED` is written to standard error and php-fpm starts anyway, so whoever monitors the deployment reads the log and decides (fix forward or roll back). The script never seeds. A seeder is run by hand in the container (`docker exec <container> php artisan db:seed --class=ProductionSeeder --force`); only a production seeder (idempotent, create-only) may run in staging or production, and `DatabaseSeeder` with `DemoSeeder` is for local development: `DemoSeeder` refuses to run outside `local` and `testing`. Heavy data tasks (recalculations, syncs, imports) run in the background, never in this script.
+`docker/production/start` caches the configuration, runs the migrations where `RUN_MIGRATIONS=true` and starts Supervisor. A failing migration does not stop the container: `MIGRATION FAILED` is written to standard error and php-fpm starts anyway, so whoever monitors the deployment reads the log and decides (fix forward or roll back). The script never seeds. A seeder is run by hand in the container (`docker exec <container> php artisan db:seed --class=ProductionSeeder --force`). Only the specialised seeders may run in staging or production: a production seeder (what every environment needs; idempotent, create-only, no account) and a demo seeder (deliberate demo content, no account with credentials outside local development). `DatabaseSeeder` is the general seeder for local development: it refuses to run outside `local` and `testing`. Heavy data tasks (recalculations, syncs, imports) run in the background, never in this script.
 
 ## OpenTelemetry
 
