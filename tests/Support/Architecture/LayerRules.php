@@ -19,6 +19,9 @@ final class LayerRules
 
     public const string APPLICATION = 'App\Application';
 
+    /** The one part of App\Application the framework-free core may use: plain data. */
+    public const string DTO = 'App\Application\Dto';
+
     public const string INFRASTRUCTURE = 'App\Infrastructure';
 
     public const string MODELS = 'App\Infrastructure\Models';
@@ -35,14 +38,14 @@ final class LayerRules
     ];
 
     /**
-     * App\Domain outside CQRS and Providers: no framework, no application, no infrastructure.
+     * App\Domain outside CQRS and Providers: no framework, no infrastructure, and of App\Application only the DTOs.
      *
      * @param  list<SourceFile>  $files
      * @return list<Violation>
      */
     public static function frameworkFreeDomain(array $files): array
     {
-        $rule = 'App\Domain outside App\Domain\CQRS and App\Domain\Providers must be framework-free and depend on neither App\Application nor App\Infrastructure';
+        $rule = 'App\Domain outside App\Domain\CQRS and App\Domain\Providers must be framework-free and depend on neither App\Infrastructure nor App\Application outside App\Application\Dto';
 
         return self::violations(
             array_filter(
@@ -52,7 +55,7 @@ final class LayerRules
                     && ! self::within($file->namespace, self::PROVIDERS),
             ),
             [...self::FRAMEWORK, self::APPLICATION, self::INFRASTRUCTURE],
-            [],
+            [self::DTO],
             $rule,
         );
     }

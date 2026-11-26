@@ -67,15 +67,23 @@ final class LayerRuleDetectionTest extends TestCase
             use App\Infrastructure\Models\Project;
             PHP, ['App\Infrastructure\Models\Project']];
 
-        yield 'the application layer' => [<<<'PHP'
+        yield 'application contracts and events' => [<<<'PHP'
             <?php
             namespace App\Domain\Economics;
-            use App\Application\Dto\Total;
-            PHP, ['App\Application\Dto\Total']];
+            use App\Application\Contract\Export\Exporter;
+            use App\Application\Event\Economics\TotalChanged;
+            PHP, ['App\Application\Contract\Export\Exporter', 'App\Application\Event\Economics\TotalChanged']];
 
-        yield 'domain classes, collections, a trait use and a closure use are allowed' => [<<<'PHP'
+        yield 'a namespace that only starts like Dto is not allowed' => [<<<'PHP'
+            <?php
+            namespace App\Domain\Economics;
+            use App\Application\DtoCache\Warmer;
+            PHP, ['App\Application\DtoCache\Warmer']];
+
+        yield 'domain classes, application DTOs, collections, a trait use and a closure use are allowed' => [<<<'PHP'
             <?php
             namespace App\Domain\Offer;
+            use App\Application\Dto\Total;
             use App\Domain\Shared\Money;
             use Illuminate\Support\Collection;
             final class OfferCalculator { use Calculates; public function f(): void { $g = function () use ($x) {}; } }
