@@ -38,8 +38,8 @@ Lunar is the shop's e-commerce core: products, variants, prices, carts, orders, 
 
 - `App\Application\Dto\<Module>`: the DTOs queries return; what pages and exporters receive.
 - `App\Application\Event\<Module>`: events a module raises for others, readonly, carrying ids.
-- `App\Application\Contract`: interfaces the infrastructure implements (external clients, storage, exporters, the change history recorder). The container binds the implementation.
-- Contains no business rule and no persistence, and never references a vendor SDK class.
+- `App\Application\Contract`: interfaces the infrastructure implements (external clients, storage, exporters, the change history recorder). The container binds the implementation. These are the ports to side effects that handlers call; an interface that core types implement (for example a translatable domain exception) is not a port and lives in `App\Domain`, next to the types.
+- Contains no business rule and no persistence, and never references a vendor SDK class. Its DTOs are plain data, so the framework-free core MAY use them ([Dependency direction](#dependency-direction)).
 
 ### `App\Infrastructure`
 
@@ -49,7 +49,7 @@ Lunar is the shop's e-commerce core: products, variants, prices, carts, orders, 
 
 ### Dependency direction
 
-- `App\Domain` MUST NOT depend on `App\Application` or `App\Infrastructure`, except `App\Domain\Providers` (above) and the CQRS handlers below. The framework-free core depends on nothing else in the application.
+- `App\Domain` MUST NOT depend on `App\Application` or `App\Infrastructure`, except `App\Domain\Providers` (above) and the CQRS handlers below. The one part of `App\Application` the framework-free core MAY use is `App\Application\Dto`: a calculator MAY take and return those DTOs, because they are plain data. The core depends on nothing else in the application.
 - CQRS handlers depend on the core, on `App\Application` (DTOs, events, contracts) and on the models in `App\Infrastructure\Models`, nothing else in `App\Infrastructure`. They never depend on controllers, requests or the session. Handlers talk to external systems through the contracts in `App\Application\Contract`; the container binds the implementation.
 - `App\Application` MUST NOT depend on `App\Infrastructure`.
 - `App\Infrastructure` depends on the commands, queries and DTOs. Models MAY use domain enums and value objects through casts.
@@ -62,7 +62,7 @@ The boundaries inside `App\Domain` (the core, `App\Domain\CQRS` which touches El
 A violation reported by the layer test ([testing.md](testing.md#architecture-tests)) is fixed by moving code to the layer that may hold it, not by relaxing the rule. The class keeps its name and behaviour; only the namespace changes, and every caller and test moves with it in the same change.
 
 - **A. Persistence or a framework call in the domain core.** The class moves into `App\Domain\CQRS` (for example next to the commands or queries it serves) as a collaborator of the handler that calls it. The pure rules stay in the core: a class is split when it mixes the two, and only the part that touches persistence or the framework moves.
-- **B. A DTO the domain logic works with.** A core class that takes or returns a DTO from `App\Application\Dto` depends on the application layer. Such a DTO is a value object: it moves to `App\Domain\ValueObjects\<Module>` and keeps its shape. Queries MAY still return it; a DTO only a page or exporter receives stays in `App\Application\Dto`.
+- **B. A DTO that builds itself from a model or an HTTP class** (a `fromModel()` factory in `App\Application\Dto`). `App\Application` does not depend on `App\Infrastructure`, so the mapping moves to the side that owns the model: a `to<Dto>()` method on the model, or the query handler that builds the DTO ([Constructing commands and queries](cqrs.md#constructing-commands-and-queries)). A core class that takes or returns an `App\Application\Dto` is not a violation.
 - **C. A handler that needs infrastructure other than a model.** Decide by the nature of the dependency:
   - pure framework glue (no persistence, no side effect) MAY stay in the core where the rules of the layer allow it, including the types a package layer allows;
   - a helper that persists moves to `App\Domain\CQRS`, as in A;

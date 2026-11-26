@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "package_version": "v0.6.1",
+    "package_version": "v0.6.2",
     "layers": [
         "general",
         "framework/laravel",
@@ -18,9 +18,9 @@
         },
         "docs/project_guidelines/architecture.md": {
             "block": "architecture",
-            "sha256": "076922cb3ac828ac330aa7e74c0b3e6364c94176d6d06ac26ca95ff29aeea906",
+            "sha256": "141863771ad1b49fe81740a0df9b5bb6b6dbd3d26375d7a5914043e0100f751a",
             "sources": {
-                "framework/laravel/architecture.md": "530704422a3352afaa97067f3680ef5a1cf328272f44ce833f0bb1366161f6fa",
+                "framework/laravel/architecture.md": "1a0d609a9497862c9eb3b323faf7772ff900c8fc2fdec16dcd3dde197c3711ea",
                 "package/filament/architecture.md": "f264ff94d84d8fd4d43b166b9a676e3aeaa2b1bc511960da3b951860c06dbccf",
                 "package/lunar/architecture.md": "e83257370d33750040c3e773c1443dde268ee9efd5ee96ef23049bfad8c9ca0d"
             }
@@ -34,9 +34,9 @@
         },
         "docs/project_guidelines/cqrs.md": {
             "block": "cqrs",
-            "sha256": "0624c0d51b3e67198ebc61328e58fd5c8489cc470f36170b812f686640146234",
+            "sha256": "bf176d670e4b3f038bcced222c000f4bbb43abbb2971d12e02432f476083e45b",
             "sources": {
-                "framework/laravel/cqrs.md": "ae4d6316224ec629aa8528a4d0c8e02ffba29db86aacf8c8debcdc61a99cd4e7"
+                "framework/laravel/cqrs.md": "3b50b636fe0179a6ddb2ce9fadcd6ff4d0144db85fa9f7f3de2d2f456a1eebc0"
             }
         },
         "docs/project_guidelines/dependencies.md": {
@@ -48,10 +48,10 @@
         },
         "docs/project_guidelines/deployment.md": {
             "block": "deployment",
-            "sha256": "91b70359a0401eb6e491b0e34118c3122fa710db2d31f0f83f7b0a6f2637b096",
+            "sha256": "6ae34076ee590c5ffacb3e988472706ff00932bc613160c7b61b53850c16da19",
             "sources": {
                 "general/deployment.md": "6a0cc72512f2e7e0796582d15b7d1c91c43cf39ce52a93e8107c857ae49e5635",
-                "framework/laravel/deployment.md": "a97bf580beed809069c39f3bb9f7321fc35db3087321ceaa00cb999c6e506f44",
+                "framework/laravel/deployment.md": "0efd7cc1a37f0ebbeccdc5ca2806622f94e958fb0c8ee7fd437a1fa79a881ccb",
                 "package/laravel-inertia/deployment.md": "de0ab78ae24be359b1b783da9b2b73f9d809b3bdc42c098feaeb0ba823135e6f"
             }
         },
@@ -113,10 +113,10 @@
         },
         "docs/project_guidelines/testing.md": {
             "block": "testing",
-            "sha256": "c7664eade1f410243731850b2aeaec6d86e3a6bbcc4dcb046b79c2f474920bb2",
+            "sha256": "6aaac022031fee5b15fe31ef967ecae5cbc97babfe80ec72a237da4c870ea575",
             "sources": {
                 "general/testing.md": "816fff945efef9a04a9caf1373e532bcb015c1b7496632dba2d6fc7216e411d6",
-                "framework/laravel/testing.md": "db738f1148f54a44942c223bb417eef8e18e576b754d9d3597d56c5d351af463",
+                "framework/laravel/testing.md": "b0a9d7241fb509762b440754f05987ac231a1936dbf5f44a11c7129adab89f01",
                 "package/mutation-testing/testing.md": "2fd4a00c1b15fa664ac1990aa7f3b3d0cbe66029b0d974aee3c5b25990343a2e",
                 "package/lunar/testing.md": "f3a2acd3fa18b196e68a87a9210f1ddbf65e32f2ed49f795cbd9c3d3725904ea"
             }
@@ -132,9 +132,9 @@
         },
         "docs/project_guidelines/workflow.md": {
             "block": "workflow",
-            "sha256": "d7514ba8df2c01f5265aa167f07a9806e9927725d1856115a03e2fca9352c36b",
+            "sha256": "9ae21e4959666b9bc13d653ac1668d9f4833e131b34e501789c510ac9f5c3c30",
             "sources": {
-                "general/workflow.md": "5cc2d251d9b23f8535c80079ee005286b480e3cf66ac6724b4b29e0005af32f9"
+                "general/workflow.md": "c15581d8178f94efec3749f12f97f13cc966c29ed2c4177d1de6b57999f73188"
             }
         }
     }

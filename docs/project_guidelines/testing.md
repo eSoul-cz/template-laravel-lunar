@@ -321,7 +321,7 @@ The stack requires one pair of architecture tests, and they are the named except
 
 | Rule | Checked in | Forbidden |
 |---|---|---|
-| the domain core is framework-free | `App\Domain`, except `App\Domain\CQRS` and `App\Domain\Providers` | `Illuminate\Database`, `Illuminate\Support\Facades`, `Illuminate\Http`, `App\Application`, `App\Infrastructure`, the container and the session (including the `app()`, `resolve()`, `request()` and `session()` helpers) |
+| the domain core is framework-free | `App\Domain`, except `App\Domain\CQRS` and `App\Domain\Providers` | `Illuminate\Database`, `Illuminate\Support\Facades`, `Illuminate\Http`, `App\Application` except `App\Application\Dto`, `App\Infrastructure`, the container and the session (including the `app()`, `resolve()`, `request()` and `session()` helpers) |
 | handlers read only models from infrastructure | `App\Domain\CQRS` | anything in `App\Infrastructure` outside `App\Infrastructure\Models` |
 | the application layer is independent of infrastructure | `App\Application` | anything in `App\Infrastructure` |
 
