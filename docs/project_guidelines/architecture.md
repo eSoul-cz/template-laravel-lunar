@@ -100,8 +100,8 @@ Module boundaries are namespaces inside the layers, not separate packages. Each 
 - Migrations are forward-only. A deployed migration is never edited; a mistake is corrected by a new migration. A migration MUST be safe to run while the previous release still serves traffic: add first, remove in a later release.
 - Every table scoped to a tenant, customer, sales channel or legal entity carries that scope explicitly. A query that can return another scope's data is a bug, not a filter to add later.
 - A yes/no fact SHOULD be stored as a nullable timestamp of when it became true (`archived_at`, not `is_archived`). A plain boolean remains fine where the moment carries no meaning.
-- A column with more than two values SHOULD be a native `ENUM` where the engine has one (MariaDB, MySQL), mapped to a PHP backed enum through a cast. PostgreSQL and the SQLite test database have no such type here: Laravel's `enum()` creates a `varchar` with a `CHECK` constraint there, which is accepted as the implementation, so "database-native" is not literally true on them. Values the client manages as data (types, tags, categories) are tables, not enums.
-- Generated index and foreign key names MUST stay within 64 characters; give long ones an explicit short name. The suite checks this ([testing.md](testing.md#database-in-tests)).
+- A column with more than two values is mapped to a PHP backed enum through a cast, and the database constrains it as the engine layer says (`package/mariadb`, `package/postgres`). Values the client manages as data (types, tags, categories) are tables, not enums.
+- Generated table, column, index and foreign key names MUST stay within the identifier limit of the production engine (the engine layer states it); give long ones an explicit short name. The suite checks this ([testing.md](testing.md#database-in-tests)).
 - Money columns hold integer minor units (`BIGINT`); exact decimals are `DECIMAL` with the scale the source material uses. `FLOAT` and `DOUBLE` are never used for money or quantities.
 - Translatable content is stored in JSON columns keyed by locale, one row per entity, never a second row per language.
 
@@ -133,6 +133,12 @@ The principles are in [domain.md](domain.md#money). On this stack:
 - Lunar money columns are `UNSIGNED` on MariaDB and MySQL. A project MUST NOT write a negative amount to one. Signed adjustments are kept in project tables and Lunar receives the positive total. SQLite does not enforce `UNSIGNED`, so the write path MUST reject a negative result itself and test it.
 - A project that sets its own exchange rates MUST switch off Lunar's price copy between currencies (`sync_prices` off, and no copy of the default prices into a new currency). Derived prices are project rows with a record of the rate used.
 - Customer-group and quantity-tier prices are chosen by one project rule, installed as a pricing pipeline step. Lunar's own choice can pick a default-list tier over a cheaper group price; the rule and the group rows for every tier prevent it.
+
+## MariaDB and MySQL
+
+<!-- from: package/mariadb -->
+- Table, column, index and foreign key names MUST stay within 64 characters; the engine rejects longer ones. Give a long generated name an explicit short one ([Persistence](#persistence)).
+- A column with more than two values SHOULD be a native `ENUM`, mapped to a PHP backed enum through a cast.
 
 ## Admin panels
 

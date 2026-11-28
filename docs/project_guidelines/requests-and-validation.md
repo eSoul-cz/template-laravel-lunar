@@ -36,7 +36,7 @@ When users type decimals in a comma locale (`1,25`, or `1 234,50` pasted from a 
 ## Dates and time zone
 
 - A date is validated with an explicit format (`date_format:Y-m-d`); a time with `H:i`. Never rely on whatever `strtotime()` accepts.
-- A date or time the user enters is local time in the business time zone and is converted to an instant once, in the mapping method ([domain.md](domain.md#time-and-dates)). The application clock (`app.timezone`) stays UTC.
+- A date-time the user enters (a moment: a deadline with a time, an appointment) is local time in the business time zone and is converted to an instant once, in the mapping method. A calendar date or a time of day (`Y-m-d`, `H:i`) stays a `DATE` or `TIME` value and is never converted ([domain.md](domain.md#time-and-dates)). The application clock (`app.timezone`) stays UTC.
 - A value the server can compute (a duration, a total) is computed on the server. The browser MUST NOT send it, and if it does it is ignored.
 
 ## Retrieving validated data

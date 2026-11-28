@@ -1,9 +1,10 @@
 {
     "schema_version": 2,
-    "package_version": "v0.7.0",
+    "package_version": "v0.8.0",
     "layers": [
         "general",
         "framework/laravel",
+        "package/mariadb",
         "package/mutation-testing",
         "package/inertia-vue",
         "package/laravel-inertia",
@@ -18,9 +19,10 @@
         },
         "docs/project_guidelines/architecture.md": {
             "block": "architecture",
-            "sha256": "141863771ad1b49fe81740a0df9b5bb6b6dbd3d26375d7a5914043e0100f751a",
+            "sha256": "c14a5d97fdd9e863d85632a923204c072f541b681fcbcce27fc5443175f9266a",
             "sources": {
-                "framework/laravel/architecture.md": "1a0d609a9497862c9eb3b323faf7772ff900c8fc2fdec16dcd3dde197c3711ea",
+                "framework/laravel/architecture.md": "a95924c9634bc70e4c1f79b2106a2e2b3c76e6800b48c4be8b65bee7c00e281c",
+                "package/mariadb/architecture.md": "115b66dddf0fd6a0a55a06ed088dfc5f4e4b88869347333c6e24df07cfa58684",
                 "package/filament/architecture.md": "f264ff94d84d8fd4d43b166b9a676e3aeaa2b1bc511960da3b951860c06dbccf",
                 "package/lunar/architecture.md": "e83257370d33750040c3e773c1443dde268ee9efd5ee96ef23049bfad8c9ca0d"
             }
@@ -48,10 +50,10 @@
         },
         "docs/project_guidelines/deployment.md": {
             "block": "deployment",
-            "sha256": "6ae34076ee590c5ffacb3e988472706ff00932bc613160c7b61b53850c16da19",
+            "sha256": "e468bdebd805f5c3bfdd3dd7298f0cda4910f03b34139c0ec994370f96b55a3e",
             "sources": {
-                "general/deployment.md": "6a0cc72512f2e7e0796582d15b7d1c91c43cf39ce52a93e8107c857ae49e5635",
-                "framework/laravel/deployment.md": "0efd7cc1a37f0ebbeccdc5ca2806622f94e958fb0c8ee7fd437a1fa79a881ccb",
+                "general/deployment.md": "a3854c3907b94602ea4891198084f21903f2bd7ff7b62152bde36d5527db108a",
+                "framework/laravel/deployment.md": "86704671358db70b0cec9f8a592cb98376999439619d8a2039f64a97095400e4",
                 "package/laravel-inertia/deployment.md": "de0ab78ae24be359b1b783da9b2b73f9d809b3bdc42c098feaeb0ba823135e6f"
             }
         },
@@ -81,7 +83,7 @@
         },
         "docs/project_guidelines/index.md": {
             "block": "index",
-            "sha256": "75603e12d2748a8418e96b522e9ef899c57d5c1db38d6ac087c2814b50b1195a"
+            "sha256": "c5d0fd304a37a315f40322b90399d75e5f0fb6c6c5207dca4a7cbd16377e0c46"
         },
         "docs/project_guidelines/integrations.md": {
             "block": "integrations",
@@ -99,33 +101,35 @@
         },
         "docs/project_guidelines/requests-and-validation.md": {
             "block": "requests-and-validation",
-            "sha256": "35fb656067518e384cfbfa087acb6aee22385dc6c6e90f371d3c1aaa6f1df903",
+            "sha256": "632815f39300aae1ee834533fc6744377c6d30a6b11722ecfbb48b0f9385af41",
             "sources": {
-                "framework/laravel/requests-and-validation.md": "7f6d89fa8967e8436551d027369786ef372fe8108a97985ff01392a02a1a1095"
+                "framework/laravel/requests-and-validation.md": "1cd4d920cf09dcd3824cc6a098cf67650ce33f819ed02601f20c68f6ecfb55a1"
             }
         },
         "docs/project_guidelines/security-and-data.md": {
             "block": "security-and-data",
-            "sha256": "d9ad76bd229196158b18303583fc3f358391b390394b777ef80766b58b09b788",
+            "sha256": "1fe6d50217e9de743a4132f9c1b8810265d1c998eb244c7b59e383227603d9d8",
             "sources": {
-                "general/security-and-data.md": "08c938cbe9006bc1204b0fd9b06a4c4ff912e09849ba28392695360025d696c3"
+                "general/security-and-data.md": "47e7dfb6021cdebf97ecc04990c5a65680046493734fe83e51e836518764e083"
             }
         },
         "docs/project_guidelines/testing.md": {
             "block": "testing",
-            "sha256": "6aaac022031fee5b15fe31ef967ecae5cbc97babfe80ec72a237da4c870ea575",
+            "sha256": "9f6b16b80f6cb677bcb3a5e837df98086b28016d79514ad4184941b7a87f5560",
             "sources": {
                 "general/testing.md": "816fff945efef9a04a9caf1373e532bcb015c1b7496632dba2d6fc7216e411d6",
-                "framework/laravel/testing.md": "b0a9d7241fb509762b440754f05987ac231a1936dbf5f44a11c7129adab89f01",
+                "framework/laravel/testing.md": "ae3df83ab6675f00c5de9dc138752817c1870997dfff2a34b73ed75cf86bebc1",
+                "package/mariadb/testing.md": "61edcbdc8a712416f9985da53ffa84e6761a0ac1964e107d8a13260cd8c91bd7",
                 "package/mutation-testing/testing.md": "2fd4a00c1b15fa664ac1990aa7f3b3d0cbe66029b0d974aee3c5b25990343a2e",
                 "package/lunar/testing.md": "f3a2acd3fa18b196e68a87a9210f1ddbf65e32f2ed49f795cbd9c3d3725904ea"
             }
         },
         "docs/project_guidelines/tools.md": {
             "block": "tools",
-            "sha256": "db5250fc9ad5a4065098ce8c552eac8abf6a347c6572499745a9acd64210b604",
+            "sha256": "aa6e2a9219e3a96f243948737909a94f6d10871c8dc5fa7a832b2c5b28c53be6",
             "sources": {
-                "framework/laravel/tools.md": "33ce1c0e33b7594cd973a72709b9f529c951a5d79468ab4dcac34b94d805884d",
+                "framework/laravel/tools.md": "5d9d25251a42cccf927c317eab4000604658e4d3d2ab2245954b7774bc79eac7",
+                "package/mariadb/tools.md": "f827d6e7684c002b5352f5f2e2c304298dc0f77060e8cb6db1ecc6455556a971",
                 "package/mutation-testing/tools.md": "edca9fbe3c3b1b910f01124c354b664f848dfdc15ff7718807456460855fbe5a",
                 "package/laravel-inertia/tools.md": "4d2e5b54fe453525736de44a1c2535dbbcd72c74e39f816c80e0b6fec05f050d"
             }

@@ -48,8 +48,8 @@ Lint, static analysis, formatting and the tests MAY run on the host (PHP, Compos
 A fresh checkout or git worktree has no `vendor/` and no `.env`:
 
 ```bash
-composer install
 cp .env.example .env
+composer install
 php artisan key:generate
 ```
 
@@ -166,8 +166,11 @@ The build requires Docker; PDFs are written to the gitignored `docs/pdf/` ([docu
 
 ## Known pitfalls
 
-- A migration that passes on SQLite can fail on MariaDB or MySQL: a `timestamp()` column without `nullable()` or a default fails under strict mode (error 1067), and `ONLY_FULL_GROUP_BY` rejects a `SELECT` expression that differs from the `GROUP BY` one. Run migrations and queries on the production engine in the `db-engine` group ([testing.md](testing.md)); identifier length is covered in [architecture.md](architecture.md#migrations).
+- A migration that passes on SQLite can fail on the production engine; the engine layer (`package/mariadb`, `package/postgres`) lists the known traps. Run migrations and queries on the production engine in the `db-engine` group ([testing.md](testing.md)); identifier length is covered in [architecture.md](architecture.md#persistence).
 - PHPStan reports "no files to analyse" on a new project whose `app/` is still empty. Guard that step in the pipeline; do not disable the analysis.
+
+<!-- from: package/mariadb -->
+- On MariaDB and MySQL a `timestamp()` column without `nullable()` or a default fails under strict mode (error 1067), and `ONLY_FULL_GROUP_BY` rejects a `SELECT` expression that differs from the `GROUP BY` one. Both pass on SQLite.
 
 ## Mutation testing (local, optional)
 
