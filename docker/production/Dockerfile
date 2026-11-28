@@ -108,6 +108,8 @@ COPY docker/production/supervisord.conf /etc/supervisor/supervisord.conf
 COPY docker/production/supervisor-php.conf /etc/supervisor/conf.d/php.conf
 COPY docker/production/supervisor-queue-worker.conf /etc/supervisor/conf.d/queue-worker.conf
 COPY docker/production/supervisor-scheduler.conf /etc/supervisor/conf.d/scheduler.conf
+# Addons add their Supervisor programs here (a slot of the template; keep this line)
+# @esoul-slot supervisor-programs
 RUN sed -i 's/^autostart=true$/autostart=%(ENV_RUN_QUEUE_WORKER)s/' /etc/supervisor/conf.d/queue-worker.conf \
     && sed -i 's/^autostart=true$/autostart=%(ENV_RUN_SCHEDULER)s/' /etc/supervisor/conf.d/scheduler.conf
 COPY docker/production/healthcheck /usr/local/bin/healthcheck

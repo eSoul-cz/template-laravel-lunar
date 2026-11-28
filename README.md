@@ -84,6 +84,12 @@ Host-side test runs export `OTEL_PHP_DISABLED_INSTRUMENTATIONS=all` when the ext
 
 `docker/production/Dockerfile` builds the release image: php-fpm on port 9000 under Supervisor with the optional queue worker and scheduler, and no web server (the host nginx reaches php-fpm over FastCGI). Its `HEALTHCHECK` fails when a Supervisor program that should run is not `RUNNING` or when a FastCGI request for `/up` does not answer `200`.
 
+## Addons
+
+The addons this project took are listed in `.esoul/template.json`; their documentation is linked below.
+
+<!-- @esoul-slot addons -->
+
 ## Troubleshooting
 
 - **`docker compose up` hangs at "Waiting for the database"**: the MariaDB container is still initialising on the first start; the entrypoint retries for two minutes. `docker compose logs mariadb` shows the reason when it does not come up.

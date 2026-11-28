@@ -10,8 +10,10 @@ use App\Domain\Providers\Filament\LunarPanelProvider;
 // exempts exactly App\Domain\Providers.
 //
 // This file is owned by the LAST template layer of the variant that touches it: a layer that adds
-// a provider overwrites the whole list instead of patching it, so the list stays explicit.
+// a provider overwrites the whole list instead of patching it, so the list stays explicit. The last line
+// is the slot `providers`: an addon takes its provider in before it. Keep it.
 return [
     AppServiceProvider::class,
     LunarPanelProvider::class,
+    // @esoul-slot providers
 ];

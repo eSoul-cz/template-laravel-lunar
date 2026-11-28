@@ -18,10 +18,14 @@ use Lunar\Base\Traits\LunarUser;
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 #[UseFactory(UserFactory::class)]
-class User extends Authenticatable implements LunarUserInterface
+class User extends Authenticatable implements
+    // @esoul-slot user-interfaces
+    LunarUserInterface
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, LunarUser, Notifiable;
+
+    // @esoul-slot user-traits
 
     /**
      * Get the attributes that should be cast.

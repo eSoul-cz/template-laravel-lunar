@@ -24,4 +24,7 @@ laravelPipeline(
 
     // Release images are built and pushed from these branches.
     deploy: [[branches: ['main', 'master']]],
+
+    // Addons add options of the pipeline here (a slot of the template; keep this line).
+    // @esoul-slot pipeline-options
 )

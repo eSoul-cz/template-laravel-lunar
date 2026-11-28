@@ -41,6 +41,17 @@
         "no_empty_comment": true,
         "not_operator_with_space": true,
         "ordered_traits": true,
+        "ordered_interfaces": false,
+        "single_space_around_construct": {
+            "constructs_followed_by_a_single_space": [
+                "abstract", "as", "attribute", "break", "case", "catch", "class", "clone", "comment", "const", "const_import", "continue",
+                "do", "echo", "else", "elseif", "enum", "extends", "final", "finally", "for", "foreach", "function", "function_import",
+                "global", "goto", "if", "include", "include_once", "instanceof", "insteadof", "interface", "match", "named_argument",
+                "namespace", "new", "open_tag_with_echo", "php_doc", "php_open", "print", "private", "private_set", "protected",
+                "protected_set", "public", "public_set", "readonly", "require", "require_once", "return", "static", "switch", "throw",
+                "trait", "try", "type_colon", "use", "use_lambda", "use_trait", "var", "while", "yield", "yield_from"
+            ]
+        },
         "strict_comparison": true,
         "ternary_to_null_coalescing": true,
         "trim_array_spaces": true,
