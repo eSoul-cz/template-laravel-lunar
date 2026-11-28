@@ -76,7 +76,7 @@ The settings are in `.env` (local) and in the stack's environment (deployed). A 
 
 ## OpenTelemetry
 
-Every deployed application exports traces, logs and metrics over OTLP (gRPC) to the host collector. The base image has the `opentelemetry` PHP extension; the template ships only the `OTEL_*` placeholders in `.env.example` and keeps `OTEL_PHP_AUTOLOAD_ENABLED=false`, so nothing is exported yet.
+Every deployed application exports traces and metrics over OTLP/HTTP (protobuf, port 4318) to the host collector, which needs no PHP extension; gRPC (port 4317) is optional per project and needs the `grpc` extension. Logs go to standard output and error. The base image has the `opentelemetry` PHP extension; the template ships only the `OTEL_*` placeholders in `.env.example` and keeps `OTEL_PHP_AUTOLOAD_ENABLED=false`, so nothing is exported yet.
 To switch it on, a maintainer approves and adds the SDK, the OTLP exporter and the Laravel auto-instrumentation packages, sets `OTEL_PHP_AUTOLOAD_ENABLED=true` and a real `OTEL_SERVICE_NAME`, and the stack's environment names the collector (`OTEL_EXPORTER_OTLP_ENDPOINT`).
 Host-side test runs export `OTEL_PHP_DISABLED_INSTRUMENTATIONS=all` when the extension is installed.
 
